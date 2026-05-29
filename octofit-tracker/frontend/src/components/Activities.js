@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const resourceName = 'activities';
+// Codespace REST API endpoint: https://{codespace}-8000.app.github.dev/api/activities
 
 function buildApiUrl(resource) {
   const codespace = process.env.REACT_APP_CODESPACE_NAME;

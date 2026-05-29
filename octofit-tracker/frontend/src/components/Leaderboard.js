@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const resourceName = 'leaderboard';
+// Codespace REST API endpoint: https://{codespace}-8000.app.github.dev/api/leaderboard
 
 function buildApiUrl(resource) {
   const codespace = process.env.REACT_APP_CODESPACE_NAME;
