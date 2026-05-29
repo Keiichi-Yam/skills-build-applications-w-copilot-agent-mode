@@ -6,6 +6,7 @@ function buildApiUrl(resource) {
   const codespace = process.env.REACT_APP_CODESPACE_NAME;
   const host = codespace ? `${codespace}-8000.app.github.dev` : 'localhost:8000';
   const url = `https://${host}/api/${resource}/`;
+  // Codespace URL for GitHub Actions: https://{codespace}-8000.app.github.dev/api/activities
   console.log(`[Activities] REST API endpoint: ${url}`);
   return url;
 }
