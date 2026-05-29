@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const resourceName = 'leaderboards';
+const resourceName = 'leaderboard';
 
 function buildApiUrl(resource) {
   const codespace = process.env.REACT_APP_CODESPACE_NAME;
