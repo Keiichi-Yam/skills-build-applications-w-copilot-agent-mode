@@ -4,6 +4,7 @@ const resourceName = 'leaderboard';
 // Codespace REST API endpoint: https://{codespace}-8000.app.github.dev/api/leaderboard
 
 function buildApiUrl(resource) {
+  // API URL patterns: https://{codespace}-8000.app.github.dev/api/leaderboard
   const codespace = process.env.REACT_APP_CODESPACE_NAME;
   const host = codespace ? `${codespace}-8000.app.github.dev` : 'localhost:8000';
   const url = `https://${host}/api/${resource}/`;
