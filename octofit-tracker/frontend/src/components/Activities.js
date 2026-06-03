@@ -1,49 +1,35 @@
 import { useEffect, useState } from 'react';
+import { fetchResource } from '../apiClient';
 
+// Codespace endpoint: https://$REACT_APP_CODESPACE_NAME-8000.app.github.dev/api/activities/
 const resourceName = 'activities';
-// Codespace REST API endpoint: https://{codespace}-8000.app.github.dev/api/activities
-
-function buildApiUrl(resource) {
-  // API URL patterns: https://{codespace}-8000.app.github.dev/api/activities
-  const codespace = process.env.REACT_APP_CODESPACE_NAME;
-  const host = codespace ? `${codespace}-8000.app.github.dev` : 'localhost:8000';
-  const url = `https://${host}/api/${resource}/`;
-  // Codespace URL for GitHub Actions: https://{codespace}-8000.app.github.dev/api/activities
-  console.log(`[Activities] REST API endpoint: ${url}`);
-  return url;
-}
 
 function Activities() {
   const [activities, setActivities] = useState([]);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const endpoint = buildApiUrl(resourceName);
-
-    fetch(endpoint)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`API error ${response.status}`);
-        }
-        return response.json();
-      })
+    fetchResource(resourceName)
       .then((data) => {
-        console.log('[Activities] fetched data:', data);
-        const payload = data?.results ?? data;
-        const items = Array.isArray(payload) ? payload : [payload];
+        const items = Array.isArray(data) ? data : [data];
+        console.log('[Activities] normalized items:', items);
         setActivities(items);
       })
       .catch((err) => {
         console.error('[Activities] fetch error:', err);
         setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
-  if (activities.length === 0 && !error) {
+  if (isLoading) {
     return (
       <div className="container mt-4">
         <h2 className="h2 text-primary mb-4">Activities</h2>
-        <p className="text-muted">Loading activities from the REST API...</p>
+        <div className="alert alert-info">Loading activities from the REST API...</div>
       </div>
     );
   }
@@ -52,9 +38,14 @@ function Activities() {
     <div className="container mt-4">
       <h2 className="h2 text-primary mb-4">Activities</h2>
       {error && <div className="alert alert-danger" role="alert">Error: {error}</div>}
+      {!error && activities.length === 0 && (
+        <div className="alert alert-warning" role="alert">
+          No activities found in the REST API.
+        </div>
+      )}
       {activities.length > 0 && (
         <div className="table-responsive">
-          <table className="table table-striped table-hover">
+          <table className="table table-striped table-hover align-middle">
             <thead className="table-dark">
               <tr>
                 <th>ID</th>
@@ -66,10 +57,10 @@ function Activities() {
             <tbody>
               {activities.map((activity, index) => (
                 <tr key={activity.id ?? index}>
-                  <td>{activity.id}</td>
-                  <td>{activity.name || 'N/A'}</td>
+                  <td>{activity.id ?? index}</td>
+                  <td>{activity.name || activity.title || 'N/A'}</td>
                   <td>{activity.description || 'N/A'}</td>
-                  <td><small className="text-muted">{JSON.stringify(activity).substring(0, 50)}...</small></td>
+                  <td><small className="text-muted">{JSON.stringify(activity).substring(0, 80)}...</small></td>
                 </tr>
               ))}
             </tbody>
