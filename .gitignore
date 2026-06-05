@@ -16,6 +16,10 @@ node_modules
 
 # production
 /build
+octofit-tracker/frontend/build/
+
+# SQLite databases
+db.sqlite3
 
 # misc
 .DS_Store
